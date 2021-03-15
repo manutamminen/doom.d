@@ -1,0 +1,178 @@
+;;; utility_functions.el -*- lexical-binding: t; -*-
+
+;; DNA utilities
+
+;; (defvar dna-complement-table (ht ("A"  "T") ("T"  "A") ("U"  "A") ("G"  "C") ("C"  "G")
+;;                                  ("Y"  "R") ("R"  "Y") ("S"  "S") ("W"  "W") ("K"  "M")
+;;                                  ("M"  "K") ("B"  "V") ("D"  "H") ("H"  "D") ("V"  "B")
+;;                                  ("N"  "N") ("a"  "t") ("t"  "a") ("u"  "a") ("g"  "c")
+;;                                  ("c"  "g") ("y"  "r") ("r"  "y") ("s"  "s") ("w"  "w")
+;;                                  ("k"  "m") ("m"  "k") ("b"  "v") ("d"  "h") ("h"  "d")
+;;                                  ("v"  "b") ("n"  "n")))
+
+;; (defun str-to-list (str)
+;;   (let* ((str-list (split-string (key-description str)))
+;;          (seq-list (read (format "%s" str-list))))
+;;     seq-list))
+
+;; (defun is-dna-seq-p (seq)
+;;   (let* ((upper-case-seq (upcase seq))
+;;          (upper-case-seq-list (str-to-list upper-case-seq))
+;;          (diff-char (set-difference upper-case-seq-list '(A C G T U W S M K R Y B D H V N))))
+;;     (if diff-char nil 't)))
+
+;; (defun complement-seq-str (seq)
+;;   (let* ((seq-list (split-string (key-description seq)))
+;;          (comp-seq-list (-map (lambda (chr) (ht-get dna-complement-table chr)) seq-list)))
+;;     (string-join comp-seq-list)))
+
+;; (defun reverse-seq ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (bounds (bounds-of-thing-at-point 'symbol))
+;;          (beg (car bounds))
+;;          (end (cdr bounds))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let ((rev-seq (s-reverse seq)))
+;;           (delete-region beg end)
+;;           (insert rev-seq)
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+;; (defun complement-seq ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (bounds (bounds-of-thing-at-point 'symbol))
+;;          (beg (car bounds))
+;;          (end (cdr bounds))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let ((comp-seq (complement-seq-str seq)))
+;;           (delete-region beg end)
+;;           (insert comp-seq)
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+;; (defun reverse-complement-seq ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (bounds (bounds-of-thing-at-point 'symbol))
+;;          (beg (car bounds))
+;;          (end (cdr bounds))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let* ((comp-seq (complement-seq-str seq))
+;;                (rev-comp-seq (s-reverse comp-seq)))
+;;           (delete-region beg end)
+;;           (insert rev-comp-seq)
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+;; (defun reverse-seq-next-line ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (bounds (bounds-of-thing-at-point 'symbol))
+;;          (beg (car bounds))
+;;          (end (cdr bounds))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let ((rev-seq (s-reverse seq)))
+;;           (end-of-line)
+;;           (insert (concat "\n" rev-seq))
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+;; (defun complement-seq-next-line ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (bounds (bounds-of-thing-at-point 'symbol))
+;;          (beg (car bounds))
+;;          (end (cdr bounds))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let ((comp-seq (complement-seq-str seq)))
+;;           (end-of-line)
+;;           (insert (concat "\n" comp-seq))
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+
+;; (defun reverse-complement-seq-next-line ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (bounds (bounds-of-thing-at-point 'symbol))
+;;          (beg (car bounds))
+;;          (end (cdr bounds))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let* ((comp-seq (complement-seq-str seq))
+;;                (rev-comp-seq (s-reverse comp-seq)))
+;;           (end-of-line)
+;;           (insert (concat "\n" rev-comp-seq))
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+
+;; ;; Implement brace expansion-like functionality
+;; ;; and develop into a degenerate nucleotide sequence
+;; ;; expansion tool
+
+;; (defun prepare-expansion (string-to-expand)
+;;   (mapcar (lambda (x) (split-string x ","))
+;;           (split-string string-to-expand "[{}]")))
+
+;; (defun join-expansions (fst-element snd-element)
+;;   (loop for i in fst-element
+;;         append (loop for j in snd-element
+;;                      collect (concat i j))))
+
+;; (defun braceexpand (string)
+;;   (reduce 'join-expansions (prepare-expansion string)))
+
+;; (defun replace-degenerate (dna-string)
+;;   (s-replace-all '(("W" . "{A,T}")
+;;                    ("S" . "{C,G}")
+;;                    ("M" . "{A,C}")
+;;                    ("K" . "{G,T}")
+;;                    ("R" . "{A,G}")
+;;                    ("Y" . "{C,T}")
+;;                    ("B" . "{C,G,T}")
+;;                    ("D" . "{A,G,T}")
+;;                    ("H" . "{A,C,G}")
+;;                    ("V" . "{A,C,T}")
+;;                    ("N" . "{A,C,G,T}"))
+;;                  dna-string))
+
+;; (defun expand-dna (dna-string)
+;;   (braceexpand
+;;    (replace-degenerate dna-string)))
+
+;; (defun insert-expansion ()
+;;   (interactive)
+;;   (let* ((seq (thing-at-point 'word))
+;;          (starting-point (point)))
+;;     (if (is-dna-seq-p seq)
+;;         (let ((expanded (expand-dna (concat "\n" seq))))
+;;           (end-of-line)
+;;           (mapcar 'insert expanded)
+;;           (goto-char starting-point))
+;;       (message "Not a DNA sequence!"))))
+
+;; Insert R pipe operator
+
+(defun insert_then_R_operator_end_nl ()
+  "R - %>% operator; place to line end and start new line."
+  (interactive)
+  (let ((curr-line (thing-at-point 'line)))
+    (if (not (string-match-p " %>% \n" curr-line))
+        (save-excursion
+          (evil-end-of-line)
+          (evil-append 1)
+          (insert " %>% ")
+          (evil-normal-state))
+      (save-excursion
+        (evil-beginning-of-line)
+        (while (re-search-forward " %>% \n" nil t)
+          (replace-match "\n"))
+        (evil-normal-state)))))
